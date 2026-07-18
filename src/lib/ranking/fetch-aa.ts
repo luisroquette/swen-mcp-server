@@ -86,11 +86,18 @@ export function familyKey(nome: string): string {
   return cleanName(nome).replace(/\s*\([^)]*\)\s*$/, '').trim().toLowerCase()
 }
 
-/** Join scores with model info, return top-N */
-function joinTop(scores: ScoreRow[], models: ModelInfo[], topN: number): BenchmarkTopRow[] {
+/**
+ * Join+dedup canônico, SEM corte de topN — usado por qualquer consumidor que
+ * já tenha buscado scores suficientes (site, API v1, MCP). Nunca duplicar
+ * este map/sort/dedup em outro arquivo: se um consumidor reimplementa esta
+ * lógica com o `nome` cru (com prefixo de vendor) em vez do `nome` limpo
+ * pro desempate, o resultado diverge do site em empates de score — foi
+ * exatamente esse tipo de bug que motivou a regra de 17/07 (site e app
+ * DEVEM ser cópia fiel do AA, sem licença poética).
+ */
+export function joinAndDedup(scores: ScoreRow[], models: Pick<ModelInfo, 'id' | 'slug' | 'nome' | 'empresa'>[]): BenchmarkTopRow[] {
   const modelById = new Map(models.map((m) => [m.id, m]))
   return scores
-    .slice(0, topN * 3) // overshoot to filter out inactive
     .map((s) => {
       const m = modelById.get(s.model_id)
       if (!m) return null
@@ -118,7 +125,11 @@ function joinTop(scores: ScoreRow[], models: ModelInfo[], topN: number): Benchma
         return true
       }
     })())
-    .slice(0, topN)
+}
+
+/** Join scores with model info, return top-N (overshoot só compensa modelos inativos/duplicados no corte inicial). */
+function joinTop(scores: ScoreRow[], models: ModelInfo[], topN: number): BenchmarkTopRow[] {
+  return joinAndDedup(scores.slice(0, topN * 3), models).slice(0, topN)
 }
 
 // ─── public composite fetchers ──────────────────────────────────────────────

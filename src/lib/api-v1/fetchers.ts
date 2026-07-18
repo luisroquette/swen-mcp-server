@@ -5,7 +5,7 @@
  * consumidor e aplicar rate limit, não pra portar dados privados).
  */
 
-import { familyKey } from '@/lib/ranking/fetch-aa'
+import { joinAndDedup } from '@/lib/ranking/fetch-aa'
 import { filterFreshScores } from '@/lib/benchmark/freshness'
 import type { NoticiaRow, ModelRow, ToolRow, TutorialRow } from './mappers'
 
@@ -22,7 +22,13 @@ async function restGet<T>(path: string, rangeHeader?: string): Promise<T[]> {
     ...fetchOptions,
     headers: { ...fetchOptions.headers, ...(rangeHeader ? { Range: rangeHeader } : {}) },
   })
-  if (!res.ok) return []
+  if (!res.ok) {
+    // Nunca deixar uma falha de infra (5xx do Supabase) virar silenciosamente
+    // "sem resultados" pro consumidor da API — loga pro maintainer conseguir
+    // distinguir "sem notícias hoje" de "Supabase caiu" nos logs da Vercel.
+    console.error(`[api-v1] restGet falhou: ${path} → ${res.status}`)
+    return []
+  }
   return res.json()
 }
 
@@ -90,10 +96,12 @@ interface RankingSourceRow {
 
 /**
  * Ranking Score AA da API v1 — MESMA regra canônica do site/app (regra
- * 17/07/2026: "não há licença poética"). Reusa familyKey (dedup por família)
- * e a MESMA ordenação (score desc, nome asc) — nunca duplicar essa lógica
- * aqui; se a regra mudar, muda em fetch-aa.ts e os 3 consumidores (site, app,
- * API) convergem juntos pelos testes de paridade já existentes.
+ * 17/07/2026: "não há licença poética"). Chama joinAndDedup() (fetch-aa.ts)
+ * diretamente — nunca duplicar esse map/sort/dedup aqui; se a regra mudar,
+ * muda em fetch-aa.ts e os 3 consumidores (site, app, API) convergem juntos
+ * pelos testes de paridade já existentes. Sem overshoot-slice aqui (ao
+ * contrário do joinTop do site): já buscamos scores/limit=1000, headroom
+ * suficiente pro limit máximo da rota (100).
  */
 export async function fetchIntelligenceRanking(limit: number): Promise<RankingSourceRow[]> {
   const [models, scores] = await Promise.all([
@@ -105,24 +113,5 @@ export async function fetchIntelligenceRanking(limit: number): Promise<RankingSo
     ),
   ])
   const freshScores = filterFreshScores(scores)
-  const modelById = new Map(models.map((m) => [m.id, m]))
-
-  const joined = freshScores
-    .map((s) => {
-      const m = modelById.get(s.model_id)
-      if (!m) return null
-      return { slug: m.slug, nome: m.nome, empresa: m.empresa, score: s.score }
-    })
-    .filter((r): r is RankingSourceRow => r !== null)
-    .sort((a, b) => b.score - a.score || a.nome.localeCompare(b.nome))
-
-  const seen = new Set<string>()
-  const deduped: RankingSourceRow[] = []
-  for (const row of joined) {
-    const k = familyKey(row.nome)
-    if (seen.has(k)) continue
-    seen.add(k)
-    deduped.push(row)
-  }
-  return deduped.slice(0, limit)
+  return joinAndDedup(freshScores, models).slice(0, limit)
 }

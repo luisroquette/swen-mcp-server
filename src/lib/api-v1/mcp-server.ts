@@ -27,6 +27,13 @@ function textResult(data: unknown) {
   return { content: [{ type: 'text' as const, text: JSON.stringify(data, null, 2) }] }
 }
 
+// isError: true sinaliza erro no nível do protocolo MCP (não só um JSON com
+// campo "error") — clientes que checam result.isError distinguem 404 de
+// sucesso sem precisar fazer parsing heurístico do texto retornado.
+function errorResult(message: string) {
+  return { content: [{ type: 'text' as const, text: JSON.stringify({ error: message }, null, 2) }], isError: true }
+}
+
 export function createMcpServer(): McpServer {
   const server = new McpServer({ name: 'swen-ai', version: '1.0.0' })
 
@@ -37,11 +44,12 @@ export function createMcpServer(): McpServer {
       description: 'List recent AI news articles from SWEN.AI (Brazilian AI news portal). Returns summary + canonical link, never the full article body.',
       inputSchema: {
         limit: z.number().int().min(1).max(50).optional().describe('Max results (default 20)'),
+        offset: z.number().int().min(0).optional().describe('Pagination offset (default 0)'),
         category: z.string().optional().describe('Filter by category, e.g. "Inteligência Artificial"'),
       },
     },
-    async ({ limit, category }) => {
-      const rows = await fetchNewsList({ limit: limit ?? 20, offset: 0, category })
+    async ({ limit, offset, category }) => {
+      const rows = await fetchNewsList({ limit: limit ?? 20, offset: offset ?? 0, category })
       return textResult(rows.map(toNewsItem))
     },
   )
@@ -51,11 +59,11 @@ export function createMcpServer(): McpServer {
     {
       title: 'Get AI News Article',
       description: 'Get a single AI news article by slug.',
-      inputSchema: { slug: z.string().describe('Article slug') },
+      inputSchema: { slug: z.string().min(1).describe('Article slug') },
     },
     async ({ slug }) => {
       const row = await fetchNewsBySlug(slug)
-      if (!row) return textResult({ error: `No article found for slug "${slug}"` })
+      if (!row) return errorResult(`No article found for slug "${slug}"`)
       return textResult(toNewsItem(row))
     },
   )
@@ -65,10 +73,13 @@ export function createMcpServer(): McpServer {
     {
       title: 'List AI Models',
       description: 'List AI model catalog: pricing, context window, speed. From SWEN.AI benchmark database.',
-      inputSchema: { limit: z.number().int().min(1).max(200).optional().describe('Max results (default 50)') },
+      inputSchema: {
+        limit: z.number().int().min(1).max(200).optional().describe('Max results (default 50)'),
+        offset: z.number().int().min(0).optional().describe('Pagination offset (default 0)'),
+      },
     },
-    async ({ limit }) => {
-      const rows = await fetchModelsList({ limit: limit ?? 50, offset: 0 })
+    async ({ limit, offset }) => {
+      const rows = await fetchModelsList({ limit: limit ?? 50, offset: offset ?? 0 })
       return textResult(rows.map(toModelItem))
     },
   )
@@ -78,11 +89,11 @@ export function createMcpServer(): McpServer {
     {
       title: 'Get AI Model',
       description: 'Get a single AI model by slug: pricing, context window, speed.',
-      inputSchema: { slug: z.string().describe('Model slug') },
+      inputSchema: { slug: z.string().min(1).describe('Model slug') },
     },
     async ({ slug }) => {
       const row = await fetchModelBySlug(slug)
-      if (!row) return textResult({ error: `No model found for slug "${slug}"` })
+      if (!row) return errorResult(`No model found for slug "${slug}"`)
       return textResult(toModelItem(row))
     },
   )
@@ -109,10 +120,13 @@ export function createMcpServer(): McpServer {
     {
       title: 'Search AI Tools',
       description: 'AI tools directory: pricing, ratings, categories. From SWEN.AI.',
-      inputSchema: { limit: z.number().int().min(1).max(200).optional().describe('Max results (default 50)') },
+      inputSchema: {
+        limit: z.number().int().min(1).max(200).optional().describe('Max results (default 50)'),
+        offset: z.number().int().min(0).optional().describe('Pagination offset (default 0)'),
+      },
     },
-    async ({ limit }) => {
-      const rows = await fetchToolsList({ limit: limit ?? 50, offset: 0 })
+    async ({ limit, offset }) => {
+      const rows = await fetchToolsList({ limit: limit ?? 50, offset: offset ?? 0 })
       return textResult(rows.map(toToolItem))
     },
   )
@@ -122,10 +136,13 @@ export function createMcpServer(): McpServer {
     {
       title: 'List AI Tutorials',
       description: 'Tutorials and guides directory. From SWEN.AI.',
-      inputSchema: { limit: z.number().int().min(1).max(100).optional().describe('Max results (default 30)') },
+      inputSchema: {
+        limit: z.number().int().min(1).max(100).optional().describe('Max results (default 30)'),
+        offset: z.number().int().min(0).optional().describe('Pagination offset (default 0)'),
+      },
     },
-    async ({ limit }) => {
-      const rows = await fetchTutorialsList({ limit: limit ?? 30, offset: 0 })
+    async ({ limit, offset }) => {
+      const rows = await fetchTutorialsList({ limit: limit ?? 30, offset: offset ?? 0 })
       return textResult(rows.map(toTutorialItem))
     },
   )
