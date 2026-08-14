@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SWEN.AI MCP — Brazilian AI intelligence for agents</title>
+  <meta name="description" content="Connect AI agents to Brazilian AI news, model rankings, tools and tutorials through the free public SWEN.AI MCP endpoint.">
+  <meta name="theme-color" content="#500c35">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <link rel="canonical" href="https://luisroquette.github.io/swen-mcp-server/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="SWEN.AI MCP Server">
+  <meta property="og:title" content="Brazilian AI intelligence. Callable by your agents.">
+  <meta property="og:description" content="Seven public MCP tools. No API key. One endpoint.">
+  <meta property="og:url" content="https://luisroquette.github.io/swen-mcp-server/">
+  <meta property="og:image" content="https://swen.ia.br/api/og/guia?title=SWEN.AI+MCP+Server&amp;badge=Open+Source">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="SWEN.AI MCP Server">
+  <meta name="twitter:description" content="Brazilian AI news, models, rankings, tools and tutorials for MCP-compatible agents.">
+  <meta name="twitter:image" content="https://swen.ia.br/api/og/guia?title=SWEN.AI+MCP+Server&amp;badge=Open+Source">
+  <link rel="stylesheet" href="site.css">
+  <script src="site.js" defer></script>
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "SWEN.AI MCP Server",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Any MCP-compatible client",
+      "softwareVersion": "1.0.0",
+      "description": "A public Model Context Protocol endpoint for Brazilian AI news, models, rankings, tools and tutorials.",
+      "url": "https://luisroquette.github.io/swen-mcp-server/",
+      "codeRepository": "https://github.com/luisroquette/swen-mcp-server",
+      "license": "https://opensource.org/license/mit",
+      "author": { "@type": "Organization", "name": "SWEN.AI", "url": "https://swen.ia.br" },
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+    }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="noise" aria-hidden="true"></div>
+
+  <header class="site-header" data-header>
+    <div class="shell nav-row">
+      <a class="brand" href="#top" aria-label="SWEN.AI MCP home"><span class="brand-mark" aria-hidden="true"><i></i></span><strong>swen.<em>ai</em></strong><small>/mcp</small></a>
+      <nav aria-label="Main navigation">
+        <a href="#tools">Tools</a>
+        <a href="#architecture">Architecture</a>
+        <a href="#security">Security</a>
+        <a class="nav-cta" href="#connect">Connect <span aria-hidden="true">↘</span></a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top">
+      <div class="hero-beam" aria-hidden="true"></div>
+      <div class="shell hero-layout">
+        <div class="hero-copy reveal">
+          <p class="eyebrow"><i></i> PUBLIC MCP ENDPOINT · BRAZIL</p>
+          <h1>Brazilian AI<br>intelligence.<br><em>Callable by agents.</em></h1>
+          <p class="lede">Give MCP-compatible clients structured access to SWEN.AI news, model data, rankings, tools and tutorials — no API key required.</p>
+          <div class="actions">
+            <a class="button primary" href="#connect">Connect in 30 seconds <span aria-hidden="true">↓</span></a>
+            <a class="button ghost" href="https://github.com/luisroquette/swen-mcp-server">Audit the source <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+
+        <div class="agent-console reveal delay-1" aria-label="Example SWEN.AI MCP tool request">
+          <div class="console-top"><span></span><span></span><span></span><small>AGENT / TOOL CALL</small></div>
+          <div class="console-body">
+            <p><span>agent</span> Which models lead the intelligence ranking?</p>
+            <div class="route"><i></i><b>swen-ai</b><code>get_intelligence_ranking</code></div>
+            <pre><code>{
+  "source": "Artificial Analysis",
+  "ranking": [
+    { "position": 1, "model": "…" },
+    { "position": 2, "model": "…" }
+  ]
+}</code></pre>
+            <small>Stable JSON contract · canonical links · read-only data</small>
+          </div>
+        </div>
+      </div>
+      <div class="shell proof-rail reveal delay-2">
+        <div><strong>7</strong><span>PUBLIC<br>TOOLS</span></div>
+        <div><strong>0</strong><span>API KEYS<br>REQUIRED</span></div>
+        <div><strong>1</strong><span>STREAMABLE<br>HTTP ENDPOINT</span></div>
+        <div><strong>MIT</strong><span>REFERENCE<br>SOURCE</span></div>
+      </div>
+    </section>
+
+    <section class="tools section" id="tools">
+      <div class="shell section-heading reveal">
+        <p class="section-label">01 / TOOL REGISTRY</p>
+        <div><h2>Seven ways to make<br><em>an agent better informed.</em></h2><p>Every tool validates input, reads the same public data behind SWEN.AI and returns a stable JSON contract.</p></div>
+      </div>
+      <div class="shell tool-grid">
+        <article class="tool-card feature reveal"><div><span>NEWS</span><small>01</small></div><h3>Search what<br>just happened.</h3><code>search_news</code><p>Recent published AI news with summaries and canonical links.</p></article>
+        <article class="tool-card reveal delay-1"><div><span>ARTICLE</span><small>02</small></div><h3>Fetch one story.</h3><code>get_news_article</code><p>Retrieve a published article by slug.</p></article>
+        <article class="tool-card reveal delay-2"><div><span>MODELS</span><small>03</small></div><h3>List the field.</h3><code>list_ai_models</code><p>Pricing, context windows and speed from the model catalog.</p></article>
+        <article class="tool-card reveal"><div><span>MODEL</span><small>04</small></div><h3>Inspect one model.</h3><code>get_model</code><p>Fetch a single model's structured public profile.</p></article>
+        <article class="tool-card ranking reveal delay-1"><div><span>RANKING</span><small>05</small></div><h3>See who leads.</h3><code>get_intelligence_ranking</code><p>Canonical Artificial Analysis Intelligence Index ordering, deduplicated by model family.</p></article>
+        <article class="tool-card reveal delay-2"><div><span>DIRECTORY</span><small>06</small></div><h3>Find an AI tool.</h3><code>search_tools</code><p>Search pricing, ratings and categories in the SWEN.AI directory.</p></article>
+        <article class="tool-card reveal delay-3"><div><span>LEARN</span><small>07</small></div><h3>List practical guides.</h3><code>list_tutorials</code><p>Browse published tutorials and learning resources.</p></article>
+      </div>
+    </section>
+
+    <section class="architecture section" id="architecture">
+      <div class="shell architecture-heading reveal">
+        <p class="section-label light">02 / ONE SOURCE, THREE SURFACES</p>
+        <h2>Portal. API. MCP.<br><em>One editorial truth.</em></h2>
+      </div>
+      <div class="shell system-map reveal delay-1">
+        <div class="source-node"><span>SWEN.AI</span><strong>POSTGRES</strong><small>public read contracts</small></div>
+        <div class="map-line"><i></i><span>fetchers</span><i></i><span>mappers</span><i></i></div>
+        <div class="surface-grid"><article><span>WEB</span><strong>swen.ia.br</strong></article><article><span>REST</span><strong>/api/v1</strong></article><article class="active"><span>MCP</span><strong>/api/mcp</strong></article></div>
+      </div>
+      <div class="shell architecture-notes">
+        <p class="reveal"><span>01</span><strong>Thin wrappers</strong><small>Business rules stay in shared fetchers and mappers.</small></p>
+        <p class="reveal delay-1"><span>02</span><strong>Stable contracts</strong><small>Agents receive structured public fields, not page scraping.</small></p>
+        <p class="reveal delay-2"><span>03</span><strong>Reference source</strong><small>The repository is auditable but may lag production slightly.</small></p>
+      </div>
+    </section>
+
+    <section class="security section" id="security">
+      <div class="shell security-layout">
+        <div class="security-copy reveal">
+          <p class="section-label light">03 / PUBLIC BY DESIGN</p>
+          <h2>No key.<br><em>Clear limits.</em></h2>
+          <p>The hosted MCP endpoint is free to connect and uses IP-based rate limiting. It exposes read-only public content through explicit tool contracts.</p>
+          <ul><li><i></i>Authentication and rate-limit internals are not published.</li><li><i></i>Database access is governed by Postgres Row Level Security.</li><li><i></i>Security findings should be reported privately.</li></ul>
+        </div>
+        <div class="boundary-card reveal delay-1">
+          <div class="boundary-top"><span>PUBLIC CONTRACT</span><b>READ ONLY</b></div>
+          <div class="boundary-row allow"><i>✓</i><span>News, models, rankings, tools, tutorials</span></div>
+          <div class="boundary-row allow"><i>✓</i><span>Input validation and canonical links</span></div>
+          <div class="boundary-row deny"><i>×</i><span>Credentials or private project references</span></div>
+          <div class="boundary-row deny"><i>×</i><span>Write operations or infrastructure access</span></div>
+          <a href="https://github.com/luisroquette/swen-mcp-server#security">Read the security boundary <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="connect section" id="connect">
+      <div class="shell connect-layout">
+        <div class="connect-copy reveal"><p class="section-label">04 / CONNECT</p><h2>One endpoint.<br><em>Nothing to install.</em></h2><p>Add the hosted URL to any client that supports remote MCP servers.</p><a href="https://swen.ia.br/developers">Need REST API access? <span aria-hidden="true">↗</span></a></div>
+        <div class="config-panel reveal delay-1">
+          <div class="config-top"><span>MCP CONFIGURATION</span><small>JSON</small></div>
+          <pre><code data-config>{
+  "mcpServers": {
+    "swen-ai": {
+      "url": "https://swen.ia.br/api/mcp"
+    }
+  }
+}</code></pre>
+          <button type="button" data-copy-config><span>Copy configuration</span><b aria-hidden="true">⌘C</b></button>
+        </div>
+      </div>
+    </section>
+
+    <section class="final-cta"><div class="shell reveal"><p>BRAZILIAN AI INTELLIGENCE · FOR AGENTS</p><h2>Give your agent<br><em>a better source.</em></h2><a class="button primary" href="#connect">Connect to SWEN.AI <span aria-hidden="true">↗</span></a></div></section>
+  </main>
+
+  <footer><div class="shell footer-grid"><a class="brand" href="#top"><span class="brand-mark" aria-hidden="true"><i></i></span><strong>swen.<em>ai</em></strong><small>/mcp</small></a><p>Public AI intelligence for MCP-compatible agents.</p><nav aria-label="Footer navigation"><a href="https://swen.ia.br">Portal</a><a href="https://swen.ia.br/developers">REST API</a><a href="https://github.com/luisroquette/swen-mcp-server">Source</a></nav></div><div class="shell footer-meta"><span>© <span data-year></span> SWEN.AI</span><span>Reference source by Luis Roquette · MIT</span></div></footer>
+</body>
+</html>
