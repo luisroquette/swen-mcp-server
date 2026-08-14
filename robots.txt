@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://luisroquette.github.io/swen-mcp-server/sitemap.xml
